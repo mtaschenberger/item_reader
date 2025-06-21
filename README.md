@@ -1,6 +1,7 @@
-
+# Item Reader
 **Product Description**
-A turnkey pipeline that ingests fantasy RPG item screenshots (e.g. D\&D armor, weapons, potions), automatically extracts and structures their content into Obsidian-ready Markdown notes, and saves the associated artwork as individual image assets. Users will be able to drop batches of screenshots into a watched folder or upload them via CLI/API/UI, and receive back fully formatted Markdown files with embedded image links—ideal for organizing and searching a personal RPG item compendium.
+
+A pipeline that ingests fantasy RPG item screenshots (e.g. D\&D armor, weapons, potions), automatically extracts and structures their content into Obsidian-ready Markdown notes, and saves the associated artwork as individual image assets. Users will be able to drop batches of screenshots into a watched folder or upload them via CLI/API/UI, and receive back fully formatted Markdown files with embedded image links—ideal for organizing and searching a personal RPG item compendium.
 
 ---
 
@@ -38,6 +39,7 @@ A turnkey pipeline that ingests fantasy RPG item screenshots (e.g. D\&D armor, w
 
 ### 2. Technical Requirements
 
+[//] # (AI! we need add a column showing what was implemented as a checkbox)
 | Category             | Requirement                                                                                                                                     |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **OCR Engine**       | - Use an open-source OCR (e.g. Tesseract) or commercial API configurable per user. <br>- Preprocess images for contrast, deskewing.             |
