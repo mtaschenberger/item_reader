@@ -9,7 +9,7 @@ class LMStudioClient(LLMServerProtocol):
     def __init__(
         self,
         endpoint: str,
-        model: str = 'qwen3-30b-a3b',
+        model: str = 'gemma-3-4b-it-qat',
     ) -> None:
         self.endpoint = endpoint.rstrip('/')
         self.model = model
