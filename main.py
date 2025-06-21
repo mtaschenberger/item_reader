@@ -1,9 +1,7 @@
-import shutil
 from PIL import Image
 import pathlib
 import multiprocessing as mp 
 from typing import Optional
-import traceback
 
 import retry 
 
@@ -113,7 +111,7 @@ def process_item(image_path: str, vault_root: str = "./vault", port: int = 11434
     ocr: OCRProtocol = TesseractOCR(lang="eng")
     llm_client: LLMServerProtocol = LMStudioClient(
         endpoint=f"http://localhost:{port}",
-         model= "gemma-3-1b-it-qat"         
+         model= "qwen3:1.7b"         
         )
     parser: ParserProtocol = ItemParser(llm_client=llm_client,
                                         system_prompt=SYSTEM_PROMPT,)
@@ -136,50 +134,30 @@ def process_item(image_path: str, vault_root: str = "./vault", port: int = 11434
     md_path = md_builder.save(item, image_file)
     print(f"Markdown saved to {md_path}")
 
-def move_file(file_path, target_folder):                                                                                                                                                                                                                                                                     
-    try:                                                                                                                                                                                                                                                                                                     
-        shutil.move(str(file_path), str(target_folder / file_path.name))                                                                                                                                                                                                                                     
-    except Exception as e:                                                                                                                                                                                                                                                                                   
-        print(f"Failed to move {file_path} to {target_folder}: {e}") 
 
 def worker(*args):
     file_queue = args[0]
     vault: str = args[1]
     port = args[2]
-
-    while not file_queue.empty():
-        try:
-            file = file_queue.get()
-            process_item(file_queue.get(), vault, port)
-            move_file(file, pathlib.Path("success"))   
-        except mp.queues.Empty:                                                                                                                                                                                                                                                                              
-            break  
-        except Exception as e:
-            print(f"Error due to - {e}")
-            print(traceback.format_exc())
-            move_file(file, pathlib.Path("error"))  
-
-
-def list_image_files(folder):
-    images = [path for path in pathlib.Path(folder).rglob('*.png')]
-    images.extend([path for path in pathlib.Path(folder).rglob('*.jpg')])
-    return images
+    try:
+        process_item(file_queue.get, vault, port)
+    except Exception as e: 
+        print(f"Error due to - {e}")
+    finally:
+        q.put(port)
 
 
 if __name__ == "__main__":
     import sys 
     
     
-    folder = sys.argv[1]
-    files = list_image_files(folder)
-
+    files = sys.argv[1:] 
     output = "/Users/marvintaschenberger/Projects/DnD/item_reader/out/"
     process = []
     q = mp.Queue()
     ports = [11435, 11436, 11437, 11438, 11439, 11440, 11441, 11442]
     [q.put(i) for i in files]
 
-    
     for port in ports: 
         p = mp.Process(target=worker, args=(q, output, port))
         p.start()
